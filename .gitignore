@@ -1,0 +1,14 @@
+# IntelliJ
+.idea/
+*.iml
+
+# Maven / Java
+target/
+*.log
+
+# Local secrets
+src/main/resources/application-local.properties
+
+# OS
+.DS_Store
+Thumbs.db
