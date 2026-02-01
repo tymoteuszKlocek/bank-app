@@ -74,4 +74,22 @@ class AccountServiceTest {
         // Weryfikujemy, że saldo się NIE zmieniło
         assertEquals(new BigDecimal("1000.00"), fromAccount.getBalance());
     }
+
+    @Test
+    @DisplayName("Should throw exception when source account not found")
+    void shouldThrowExceptionWhenSourceAccountNotFound() {
+        // GIVEN
+        // Mówimy mockowi: gdy ktoś zapyta o ACC_MISSING, zwróć pusty Optional (brak konta)
+        when(accountRepository.findByAccountNumber("ACC_MISSING")).thenReturn(Optional.empty());
+
+        // WHEN & THEN
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            accountService.transfer("ACC_MISSING", "ACC2", new BigDecimal("100.00"));
+        });
+
+        assertEquals("Account not found", exception.getMessage());
+
+        // Weryfikujemy, że save() nigdy nie zostało zawołane (bo proces padł wcześniej)
+        verify(accountRepository, never()).save(any());
+    }
 }
